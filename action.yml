@@ -1,13 +1,17 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: Annotate Pull Request with Link
+description: >-
+  Annotate a pull request description with a link which will redirect the viewer
+  to a review app
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
+  token:
+    description: GitHub Access Token scoped to access the repository
     required: true
-    default: '1000'
+  annotation-url:
+    description: Where to redirect the viewer
+    required: true
 outputs:
-  time: # output will be available to future steps
-    description: 'The message to output'
+  annotation-url:
+    description: The url constructed based on the branch of the pull request
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: node12
+  main: index.js

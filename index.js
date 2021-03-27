@@ -1,21 +1,35 @@
-const core = require('@actions/core');
-const wait = require('./wait');
+const core = require("@actions/core");
+const github = require("@actions/github");
+const { createReviewComment } = require("./main");
 
+try {
+  // inputs
+  const token = core.getInput("token");
+  const annotationUrl = core.getInput("annotation-url");
 
-// most @actions toolkit packages have async methods
-async function run() {
-  try {
-    const ms = core.getInput('milliseconds');
-    core.info(`Waiting ${ms} milliseconds ...`);
+  // pull request details
+  const { payload } = github.context;
 
-    core.debug((new Date()).toTimeString()); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-    await wait(parseInt(ms));
-    core.info((new Date()).toTimeString());
+  const { pull_request, repository, number: pull_number } = payload;
+  const pull_name = pull_request["head"]["ref"];
+  const {
+    full_name: repo_pathname,
+    owner: repo_owner,
+    name: repo_name,
+  } = repository;
+  const owner_name = repo_owner["login"];
 
-    core.setOutput('time', new Date().toTimeString());
-  } catch (error) {
-    core.setFailed(error.message);
-  }
+  // build annotation text
+  const pull_request_path = `${repo_pathname}/tree/${pull_name}`;
+  const annotation_body = `${annotationUrl}${pull_request_path}`;
+
+  createReviewComment(
+    token,
+    owner_name,
+    repo_name,
+    pull_number,
+    annotation_body
+  );
+} catch (error) {
+  core.setFailed(error.message);
 }
-
-run();
