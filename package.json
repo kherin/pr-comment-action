@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/kherin/pr-comment-action",
   "dependencies": {
-    "@actions/core": "^1.2.5",
+    "@actions/core": "^1.6.0",
     "@actions/github": "^4.0.0",
     "@octokit/rest": "^18.5.2",
     "nock": "^13.0.11"
